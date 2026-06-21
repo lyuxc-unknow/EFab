@@ -1,1 +1,26 @@
-{"type":"efab:grid","pattern":["ici","ibi","ici"],"key":{"i":{"item":"minecraft:iron_ingot"},"b":{"item":"efab:base"},"c":{"item":"minecraft:piston"}},"result":{"id":"efab:steamengine"},"tiers":["gearbox"],"time":20}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "ici",
+    "ibi",
+    "ici"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "efab:base"
+    },
+    "c": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "efab:steamengine"
+  },
+  "tiers": [
+    "gearbox"
+  ],
+  "time": 20
+}

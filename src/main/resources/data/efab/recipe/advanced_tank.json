@@ -1,1 +1,20 @@
-{"type":"efab:grid","pattern":["iii","i i","iii"],"key":{"i":{"item":"minecraft:iron_block"}},"result":{"id":"efab:advanced_tank"},"tiers":["gearbox"],"time":50}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "iii",
+    "i i",
+    "iii"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "id": "efab:advanced_tank"
+  },
+  "tiers": [
+    "gearbox"
+  ],
+  "time": 50
+}

@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/crafter"},"facing=north":{"model":"efab:block/crafter","y":180},"facing=east":{"model":"efab:block/crafter","y":270},"facing=west":{"model":"efab:block/crafter","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/crafter"
+    },
+    "facing=north": {
+      "model": "efab:block/crafter",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/crafter",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/crafter",
+      "y": 90
+    }
+  }
+}

@@ -24,8 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class EFabCraftingScreen extends AbstractContainerScreen<EFabCraftingMenu> {
 
-    private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath(EFab.MODID, "textures/gui/grid.png");
+    private static final ResourceLocation BACKGROUND = EFab.rl("textures/gui/grid.png");
     private static final int CRAFT_BUTTON_X = 84;
     private static final int CRAFT_BUTTON_Y = 24;
     private static final int CRAFT_BUTTON_WIDTH = 40;
@@ -96,15 +95,11 @@ public class EFabCraftingScreen extends AbstractContainerScreen<EFabCraftingMenu
     }
 
     private void requestStatus() {
-        if (menu.getBlockEntity() != null) {
-            PacketDistributor.sendToServer(new CraftingStatusRequestPayload(menu.getBlockEntity().getBlockPos()));
-        }
+        PacketDistributor.sendToServer(new CraftingStatusRequestPayload(menu.getBlockEntity().getBlockPos()));
     }
 
     private void sendCraftAction() {
-        if (menu.getBlockEntity() != null) {
-            PacketDistributor.sendToServer(new CraftingActionPayload(menu.getBlockEntity().getBlockPos(), hasShiftDown()));
-        }
+        PacketDistributor.sendToServer(new CraftingActionPayload(menu.getBlockEntity().getBlockPos(), hasShiftDown()));
     }
 
     private void updateCraftButton() {
@@ -156,7 +151,7 @@ public class EFabCraftingScreen extends AbstractContainerScreen<EFabCraftingMenu
     }
 
     private void renderGhostResult(GuiGraphics guiGraphics) {
-        CraftingStatus status = ClientCraftingStatusCache.get(menu.getBlockEntity() == null ? null : menu.getBlockEntity().getBlockPos());
+        CraftingStatus status = ClientCraftingStatusCache.get(menu.getBlockEntity().getBlockPos());
         if (status == null || status.result().isEmpty()) {
             return;
         }
@@ -169,7 +164,7 @@ public class EFabCraftingScreen extends AbstractContainerScreen<EFabCraftingMenu
         if (!isHovering(95, 45, 16, 16, mouseX, mouseY)) {
             return;
         }
-        CraftingStatus status = ClientCraftingStatusCache.get(menu.getBlockEntity() == null ? null : menu.getBlockEntity().getBlockPos());
+        CraftingStatus status = ClientCraftingStatusCache.get(menu.getBlockEntity().getBlockPos());
         if (status != null && !status.result().isEmpty()) {
             guiGraphics.renderTooltip(font, status.result(), mouseX, mouseY);
         }

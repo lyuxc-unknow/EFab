@@ -17,8 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
 
-    private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath(EFab.MODID, "textures/gui/storage.png");
+    private static final ResourceLocation BACKGROUND = EFab.rl("textures/gui/storage.png");
 
     private EditBox nameField;
     private boolean applyingServerName;

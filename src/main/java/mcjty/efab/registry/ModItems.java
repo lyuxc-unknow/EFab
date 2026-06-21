@@ -2,12 +2,17 @@ package mcjty.efab.registry;
 
 import mcjty.efab.EFab;
 import mcjty.efab.recipe.RecipeTier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 public final class ModItems {
@@ -57,11 +62,11 @@ public final class ModItems {
         }
 
         @Override
-        public void appendHoverText(net.minecraft.world.item.ItemStack stack, Item.TooltipContext context,
-                                    java.util.List<net.minecraft.network.chat.Component> tooltip,
-                                    net.minecraft.world.item.TooltipFlag flag) {
-            tooltip.add(net.minecraft.network.chat.Component.translatable(upgradeTooltipKey())
-                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                    List<Component> tooltip,
+                                    TooltipFlag flag) {
+            tooltip.add(Component.translatable(upgradeTooltipKey())
+                    .withStyle(ChatFormatting.GRAY));
             super.appendHoverText(stack, context, tooltip, flag);
         }
 

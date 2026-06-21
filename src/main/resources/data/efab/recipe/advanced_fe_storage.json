@@ -1,1 +1,27 @@
-{"type":"efab:grid","pattern":["rRr","RbR","rRr"],"key":{"r":{"item":"minecraft:redstone"},"b":{"item":"efab:fe_storage"},"R":{"item":"minecraft:redstone_block"}},"result":{"id":"efab:advanced_fe_storage"},"tiers":["fe"],"fe_per_tick":200,"time":500}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "rRr",
+    "RbR",
+    "rRr"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "efab:fe_storage"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "id": "efab:advanced_fe_storage"
+  },
+  "tiers": [
+    "fe"
+  ],
+  "fe_per_tick": 200,
+  "time": 500
+}

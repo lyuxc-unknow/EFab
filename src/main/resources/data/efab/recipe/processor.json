@@ -1,1 +1,27 @@
-{"type":"efab:grid","pattern":["rqr","rbr","rqr"],"key":{"r":{"item":"minecraft:redstone"},"b":{"item":"efab:base"},"q":{"item":"minecraft:quartz"}},"result":{"id":"efab:processor"},"tiers":["fe"],"fe_per_tick":10,"time":100}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "rqr",
+    "rbr",
+    "rqr"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "efab:base"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "result": {
+    "id": "efab:processor"
+  },
+  "tiers": [
+    "fe"
+  ],
+  "fe_per_tick": 10,
+  "time": 100
+}

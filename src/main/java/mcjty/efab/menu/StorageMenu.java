@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -37,21 +38,16 @@ public class StorageMenu extends AbstractContainerMenu {
     public StorageMenu(int containerId, Inventory playerInventory, StorageBlockEntity blockEntity) {
         super(ModMenus.STORAGE.get(), containerId);
         this.blockEntity = blockEntity;
-        this.access = blockEntity == null
-                ? ContainerLevelAccess.NULL
-                : ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
-        this.menuBlock = blockEntity == null ? null : blockEntity.getBlockState().getBlock();
-        this.blockPos = blockEntity == null ? BlockPos.ZERO : blockEntity.getBlockPos();
+        this.access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
+        this.menuBlock = blockEntity.getBlockState().getBlock();
+        this.blockPos = blockEntity.getBlockPos();
 
-        ItemStackHandler handler = blockEntity == null ? new ItemStackHandler(STORAGE_SLOT_COUNT) : blockEntity.getItemHandler();
+        ItemStackHandler handler = blockEntity.getItemHandler();
         addStorageSlots(handler);
         addPlayerSlots(playerInventory);
     }
 
-    private static StorageBlockEntity lookupBlockEntity(Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
-        if (extraData == null) {
-            return null;
-        }
+    private static @Nullable StorageBlockEntity lookupBlockEntity(Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
         BlockPos pos = extraData.readBlockPos();
         if (playerInventory.player.level().getBlockEntity(pos) instanceof StorageBlockEntity storageBlockEntity) {
             return storageBlockEntity;

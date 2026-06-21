@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -20,9 +19,9 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 public final class EFabModelRenderer {
 
     public static final ModelResourceLocation WHEEL =
-            ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "block/wheel"));
+            ModelResourceLocation.standalone(EFab.rl("block/wheel"));
     public static final ModelResourceLocation PIPE =
-            ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "block/pipe"));
+            ModelResourceLocation.standalone(EFab.rl("block/pipe"));
 
     public static void render(ModelResourceLocation model, PoseStack poseStack, MultiBufferSource bufferSource,
                               int packedLight, int packedOverlay, BlockState state) {

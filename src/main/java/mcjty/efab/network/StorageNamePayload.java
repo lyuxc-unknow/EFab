@@ -6,13 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 
 @MethodsReturnNonnullByDefault
 public record StorageNamePayload(BlockPos pos, String name) implements CustomPacketPayload {
 
     public static final Type<StorageNamePayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "storage_name"));
+            new Type<>(EFab.rl("storage_name"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StorageNamePayload> STREAM_CODEC = new StreamCodec<>() {
         @Override

@@ -1,1 +1,16 @@
-{"type":"efab:grid","pattern":["ccc","c c","ccc"],"key":{"c":{"item":"minecraft:cobblestone"}},"result":{"id":"minecraft:furnace"}}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "ccc",
+    "c c",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:cobblestone"
+    }
+  },
+  "result": {
+    "id": "minecraft:furnace"
+  }
+}

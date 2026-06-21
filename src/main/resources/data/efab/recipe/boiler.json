@@ -1,1 +1,26 @@
-{"type":"efab:grid","pattern":["ici","ibi","iii"],"key":{"i":{"item":"minecraft:iron_ingot"},"b":{"item":"efab:base"},"c":{"item":"minecraft:cauldron"}},"result":{"id":"efab:boiler"},"tiers":["gearbox"],"time":20}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "ici",
+    "ibi",
+    "iii"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "efab:base"
+    },
+    "c": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "result": {
+    "id": "efab:boiler"
+  },
+  "tiers": [
+    "gearbox"
+  ],
+  "time": 20
+}

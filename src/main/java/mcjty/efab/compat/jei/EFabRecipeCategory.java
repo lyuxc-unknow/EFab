@@ -1,5 +1,6 @@
 package mcjty.efab.compat.jei;
 
+import mcjty.efab.EFab;
 import mcjty.efab.api.recipe.EFabRecipeRequirement;
 import mcjty.efab.recipe.EFabRecipe;
 import mcjty.efab.recipe.FluidRequirement;
@@ -31,10 +32,8 @@ import java.text.DecimalFormat;
 @MethodsReturnNonnullByDefault
 public class EFabRecipeCategory implements IRecipeCategory<EFabRecipe> {
 
-    private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath("efab", "textures/gui/grid_jei.png");
-    private static final ResourceLocation ICONS =
-            ResourceLocation.fromNamespaceAndPath("efab", "textures/gui/icons.png");
+    private static final ResourceLocation BACKGROUND = EFab.rl("textures/gui/grid_jei.png");
+    private static final ResourceLocation ICONS = EFab.rl("textures/gui/icons.png");
     private static final int WIDTH = 140;
     private static final int HEIGHT = 110;
     private static final DecimalFormat POWER_FORMAT = new DecimalFormat("#.##");

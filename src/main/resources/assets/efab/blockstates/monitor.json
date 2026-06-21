@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/monitor"},"facing=north":{"model":"efab:block/monitor","y":180},"facing=east":{"model":"efab:block/monitor","y":270},"facing=west":{"model":"efab:block/monitor","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/monitor"
+    },
+    "facing=north": {
+      "model": "efab:block/monitor",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/monitor",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/monitor",
+      "y": 90
+    }
+  }
+}

@@ -1,1 +1,7 @@
-{"variants":{"":{"model":"efab:block/base"}}}
+{
+  "variants": {
+    "": {
+      "model": "efab:block/base"
+    }
+  }
+}

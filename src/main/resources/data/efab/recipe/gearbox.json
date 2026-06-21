@@ -1,1 +1,22 @@
-{"type":"efab:grid","pattern":["iri","rbr","iri"],"key":{"i":{"item":"minecraft:iron_ingot"},"r":{"item":"minecraft:redstone"},"b":{"item":"efab:base"}},"result":{"id":"efab:gearbox"}}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "iri",
+    "rbr",
+    "iri"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "efab:base"
+    }
+  },
+  "result": {
+    "id": "efab:gearbox"
+  }
+}

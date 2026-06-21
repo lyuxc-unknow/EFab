@@ -29,7 +29,7 @@ public class EFabJeiPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(EFab.MODID, "jei");
+        return EFab.rl("jei");
     }
 
     @Override

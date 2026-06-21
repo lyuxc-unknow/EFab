@@ -1,12 +1,34 @@
 {
   "variants": {
-    "facing=south,half=false": { "model": "efab:block/grid_full" },
-    "facing=north,half=false": { "model": "efab:block/grid_full", "y": 180 },
-    "facing=east,half=false": { "model": "efab:block/grid_full", "y": 270 },
-    "facing=west,half=false": { "model": "efab:block/grid_full", "y": 90 },
-    "facing=south,half=true": { "model": "efab:block/grid" },
-    "facing=north,half=true": { "model": "efab:block/grid", "y": 180 },
-    "facing=east,half=true": { "model": "efab:block/grid", "y": 270 },
-    "facing=west,half=true": { "model": "efab:block/grid", "y": 90 }
+    "facing=south,half=false": {
+      "model": "efab:block/grid_full"
+    },
+    "facing=north,half=false": {
+      "model": "efab:block/grid_full",
+      "y": 180
+    },
+    "facing=east,half=false": {
+      "model": "efab:block/grid_full",
+      "y": 270
+    },
+    "facing=west,half=false": {
+      "model": "efab:block/grid_full",
+      "y": 90
+    },
+    "facing=south,half=true": {
+      "model": "efab:block/grid"
+    },
+    "facing=north,half=true": {
+      "model": "efab:block/grid",
+      "y": 180
+    },
+    "facing=east,half=true": {
+      "model": "efab:block/grid",
+      "y": 270
+    },
+    "facing=west,half=true": {
+      "model": "efab:block/grid",
+      "y": 90
+    }
   }
 }

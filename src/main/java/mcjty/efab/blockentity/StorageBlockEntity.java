@@ -53,7 +53,7 @@ public class StorageBlockEntity extends BlockEntity implements MenuProvider, Nam
     }
 
     public void setCraftingName(String craftingName) {
-        this.craftingName = craftingName == null ? "" : craftingName;
+        this.craftingName = craftingName;
         setChanged();
     }
 

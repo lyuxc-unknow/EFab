@@ -1,1 +1,25 @@
-{"type":"efab:grid","pattern":["rrr","rbr","rrr"],"key":{"r":{"item":"minecraft:redstone_block"},"b":{"item":"efab:base"}},"result":{"id":"efab:power_optimizer"},"tiers":["fe","computing"],"fe_per_tick":50,"time":1000}
+{
+  "type": "efab:grid",
+  "pattern": [
+    "rrr",
+    "rbr",
+    "rrr"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone_block"
+    },
+    "b": {
+      "item": "efab:base"
+    }
+  },
+  "result": {
+    "id": "efab:power_optimizer"
+  },
+  "tiers": [
+    "fe",
+    "computing"
+  ],
+  "fe_per_tick": 50,
+  "time": 1000
+}

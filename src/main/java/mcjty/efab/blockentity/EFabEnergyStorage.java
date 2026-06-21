@@ -30,7 +30,7 @@ public class EFabEnergyStorage extends EnergyStorage {
     }
 
     public void setEnergy(int energy) {
-        this.energy = Math.max(0, Math.min(capacity, energy));
+        this.energy = Math.clamp(energy, 0, capacity);
     }
 
     /**

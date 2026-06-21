@@ -8,6 +8,7 @@ import mcjty.efab.registry.ModItems;
 import mcjty.efab.registry.ModMenus;
 import mcjty.efab.registry.ModRecipes;
 import mcjty.efab.network.ModNetworking;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -30,5 +31,9 @@ public class EFab {
         modEventBus.addListener(ModNetworking::register);
 
         modContainer.registerConfig(ModConfig.Type.SERVER, EFabConfig.SERVER_SPEC);
+    }
+
+    public static ResourceLocation rl(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

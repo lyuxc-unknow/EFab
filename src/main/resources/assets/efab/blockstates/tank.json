@@ -1,20 +1,64 @@
 {
   "variants": {
-    "facing=south,part=full": { "model": "efab:block/tank" },
-    "facing=north,part=full": { "model": "efab:block/tank", "y": 180 },
-    "facing=east,part=full": { "model": "efab:block/tank", "y": 270 },
-    "facing=west,part=full": { "model": "efab:block/tank", "y": 90 },
-    "facing=south,part=bottom": { "model": "efab:block/tankbottom" },
-    "facing=north,part=bottom": { "model": "efab:block/tankbottom", "y": 180 },
-    "facing=east,part=bottom": { "model": "efab:block/tankbottom", "y": 270 },
-    "facing=west,part=bottom": { "model": "efab:block/tankbottom", "y": 90 },
-    "facing=south,part=top": { "model": "efab:block/tanktop" },
-    "facing=north,part=top": { "model": "efab:block/tanktop", "y": 180 },
-    "facing=east,part=top": { "model": "efab:block/tanktop", "y": 270 },
-    "facing=west,part=top": { "model": "efab:block/tanktop", "y": 90 },
-    "facing=south,part=middle": { "model": "efab:block/tankmiddle" },
-    "facing=north,part=middle": { "model": "efab:block/tankmiddle", "y": 180 },
-    "facing=east,part=middle": { "model": "efab:block/tankmiddle", "y": 270 },
-    "facing=west,part=middle": { "model": "efab:block/tankmiddle", "y": 90 }
+    "facing=south,part=full": {
+      "model": "efab:block/tank"
+    },
+    "facing=north,part=full": {
+      "model": "efab:block/tank",
+      "y": 180
+    },
+    "facing=east,part=full": {
+      "model": "efab:block/tank",
+      "y": 270
+    },
+    "facing=west,part=full": {
+      "model": "efab:block/tank",
+      "y": 90
+    },
+    "facing=south,part=bottom": {
+      "model": "efab:block/tankbottom"
+    },
+    "facing=north,part=bottom": {
+      "model": "efab:block/tankbottom",
+      "y": 180
+    },
+    "facing=east,part=bottom": {
+      "model": "efab:block/tankbottom",
+      "y": 270
+    },
+    "facing=west,part=bottom": {
+      "model": "efab:block/tankbottom",
+      "y": 90
+    },
+    "facing=south,part=top": {
+      "model": "efab:block/tanktop"
+    },
+    "facing=north,part=top": {
+      "model": "efab:block/tanktop",
+      "y": 180
+    },
+    "facing=east,part=top": {
+      "model": "efab:block/tanktop",
+      "y": 270
+    },
+    "facing=west,part=top": {
+      "model": "efab:block/tanktop",
+      "y": 90
+    },
+    "facing=south,part=middle": {
+      "model": "efab:block/tankmiddle"
+    },
+    "facing=north,part=middle": {
+      "model": "efab:block/tankmiddle",
+      "y": 180
+    },
+    "facing=east,part=middle": {
+      "model": "efab:block/tankmiddle",
+      "y": 270
+    },
+    "facing=west,part=middle": {
+      "model": "efab:block/tankmiddle",
+      "y": 90
+    }
   }
 }

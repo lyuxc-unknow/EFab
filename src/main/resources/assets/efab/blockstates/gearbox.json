@@ -1,1 +1,7 @@
-{"variants":{"":{"model":"efab:block/gearbox"}}}
+{
+  "variants": {
+    "": {
+      "model": "efab:block/gearbox"
+    }
+  }
+}

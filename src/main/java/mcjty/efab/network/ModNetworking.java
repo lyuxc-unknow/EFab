@@ -64,7 +64,6 @@ public final class ModNetworking {
         }
         if (player.containerMenu instanceof EFabCraftingMenu menu
                 && menu.isCrafterMenu()
-                && menu.getBlockEntity() != null
                 && menu.getBlockEntity().getBlockPos().equals(payload.pos())
                 && menu.stillValid(player)) {
             menu.setTemplateSlots(payload.stacks());
@@ -77,7 +76,6 @@ public final class ModNetworking {
         }
         if (player.containerMenu instanceof EFabCraftingMenu menu
                 && !menu.isCrafterMenu()
-                && menu.getBlockEntity() != null
                 && menu.getBlockEntity().getBlockPos().equals(payload.pos())
                 && menu.stillValid(player)) {
             menu.fillGridFromPlayer(payload.stacks());

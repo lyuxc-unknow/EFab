@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/boiler"},"facing=north":{"model":"efab:block/boiler","y":180},"facing=east":{"model":"efab:block/boiler","y":270},"facing=west":{"model":"efab:block/boiler","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/boiler"
+    },
+    "facing=north": {
+      "model": "efab:block/boiler",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/boiler",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/boiler",
+      "y": 90
+    }
+  }
+}

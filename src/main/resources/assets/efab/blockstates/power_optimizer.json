@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/power_optimizer"},"facing=north":{"model":"efab:block/power_optimizer","y":180},"facing=east":{"model":"efab:block/power_optimizer","y":270},"facing=west":{"model":"efab:block/power_optimizer","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/power_optimizer"
+    },
+    "facing=north": {
+      "model": "efab:block/power_optimizer",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/power_optimizer",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/power_optimizer",
+      "y": 90
+    }
+  }
+}

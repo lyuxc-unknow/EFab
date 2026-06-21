@@ -1,9 +1,9 @@
 {
-  "type": "efab:grid",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
-    "iii",
-    " c ",
-    "iii"
+    " i ",
+    "ici",
+    " i "
   ],
   "key": {
     "i": {
@@ -14,10 +14,6 @@
     }
   },
   "result": {
-    "id": "efab:crafter"
-  },
-  "tiers": [
-    "gearbox"
-  ],
-  "time": 40
+    "id": "efab:grid"
+  }
 }

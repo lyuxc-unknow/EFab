@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/steamengine"},"facing=north":{"model":"efab:block/steamengine","y":180},"facing=east":{"model":"efab:block/steamengine","y":270},"facing=west":{"model":"efab:block/steamengine","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/steamengine"
+    },
+    "facing=north": {
+      "model": "efab:block/steamengine",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/steamengine",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/steamengine",
+      "y": 90
+    }
+  }
+}

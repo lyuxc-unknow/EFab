@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public record CrafterTemplatePayload(BlockPos pos, List<ItemStack> stacks) imple
     public static final int TEMPLATE_SLOTS = 9;
 
     public static final Type<CrafterTemplatePayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "crafter_template"));
+            new Type<>(EFab.rl("crafter_template"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrafterTemplatePayload> STREAM_CODEC = new StreamCodec<>() {
         @Override

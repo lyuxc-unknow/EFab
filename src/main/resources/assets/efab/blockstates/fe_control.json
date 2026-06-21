@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/fe_control"},"facing=north":{"model":"efab:block/fe_control","y":180},"facing=east":{"model":"efab:block/fe_control","y":270},"facing=west":{"model":"efab:block/fe_control","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/fe_control"
+    },
+    "facing=north": {
+      "model": "efab:block/fe_control",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/fe_control",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/fe_control",
+      "y": 90
+    }
+  }
+}

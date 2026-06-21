@@ -1,1 +1,19 @@
-{"variants":{"facing=south":{"model":"efab:block/pipes"},"facing=north":{"model":"efab:block/pipes","y":180},"facing=east":{"model":"efab:block/pipes","y":270},"facing=west":{"model":"efab:block/pipes","y":90}}}
+{
+  "variants": {
+    "facing=south": {
+      "model": "efab:block/pipes"
+    },
+    "facing=north": {
+      "model": "efab:block/pipes",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "efab:block/pipes",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "efab:block/pipes",
+      "y": 90
+    }
+  }
+}

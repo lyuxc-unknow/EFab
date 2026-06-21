@@ -9,10 +9,7 @@ import mcjty.efab.block.NonFullHorizontalTierPartBlock;
 import mcjty.efab.block.TankBlock;
 import mcjty.efab.block.TieredNonFullHorizontalEFabEntityBlock;
 import mcjty.efab.block.TierPartBlock;
-import mcjty.efab.blockentity.EnergyBlockEntity;
-import mcjty.efab.blockentity.MonitorBlockEntity;
-import mcjty.efab.blockentity.StorageBlockEntity;
-import mcjty.efab.blockentity.TankBlockEntity;
+import mcjty.efab.blockentity.*;
 import mcjty.efab.config.EFabConfig;
 import mcjty.efab.recipe.RecipeTier;
 import net.minecraft.world.level.block.Block;
@@ -46,7 +43,7 @@ public final class ModBlocks {
             () -> new NonFullHorizontalTierPartBlock(nonFullMachineProperties(), RecipeTier.STEAM));
     public static final DeferredBlock<Block> STEAM_ENGINE = BLOCKS.register("steamengine",
             () -> new TieredNonFullHorizontalEFabEntityBlock(nonFullMachineProperties(),
-                    mcjty.efab.blockentity.SteamEngineBlockEntity::new, RecipeTier.STEAM));
+                    SteamEngineBlockEntity::new, RecipeTier.STEAM));
     public static final DeferredBlock<Block> PROCESSOR = BLOCKS.register("processor",
             () -> new HorizontalTierPartBlock(machineProperties(), RecipeTier.COMPUTING));
     public static final DeferredBlock<Block> MONITOR = BLOCKS.register("monitor",
@@ -72,9 +69,9 @@ public final class ModBlocks {
             () -> new TankBlock(nonFullMachineProperties(), (pos, state) ->
                     new TankBlockEntity(pos, state, EFabConfig.ADVANCED_TANK_CAPACITY.get())));
     public static final DeferredBlock<Block> GRID = BLOCKS.register("grid",
-            () -> new GridBlock(nonFullMachineProperties(), mcjty.efab.blockentity.GridBlockEntity::new));
+            () -> new GridBlock(nonFullMachineProperties(), GridBlockEntity::new));
     public static final DeferredBlock<Block> CRAFTER = BLOCKS.register("crafter",
-            () -> new NonFullHorizontalEFabEntityBlock(nonFullMachineProperties(), mcjty.efab.blockentity.CrafterBlockEntity::new));
+            () -> new NonFullHorizontalEFabEntityBlock(nonFullMachineProperties(), CrafterBlockEntity::new));
 
     private ModBlocks() {
     }

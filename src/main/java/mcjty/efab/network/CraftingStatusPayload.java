@@ -6,14 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 @MethodsReturnNonnullByDefault
 public record CraftingStatusPayload(BlockPos pos, int progress, int requiredTime, ItemStack result) implements CustomPacketPayload {
 
     public static final Type<CraftingStatusPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "crafting_status"));
+            new Type<>(EFab.rl("crafting_status"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatusPayload> STREAM_CODEC = new StreamCodec<>() {
         @Override

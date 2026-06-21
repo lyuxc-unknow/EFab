@@ -1,1 +1,19 @@
-{"variants":{"facing=north":{"model":"efab:block/processor"},"facing=south":{"model":"efab:block/processor","y":180},"facing=west":{"model":"efab:block/processor","y":270},"facing=east":{"model":"efab:block/processor","y":90}}}
+{
+  "variants": {
+    "facing=north": {
+      "model": "efab:block/processor"
+    },
+    "facing=south": {
+      "model": "efab:block/processor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "efab:block/processor",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "efab:block/processor",
+      "y": 90
+    }
+  }
+}

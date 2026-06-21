@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public record GridTransferPayload(BlockPos pos, List<ItemStack> stacks) implemen
     public static final int INPUT_SLOTS = 9;
 
     public static final Type<GridTransferPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(EFab.MODID, "grid_transfer"));
+            new Type<>(EFab.rl("grid_transfer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, GridTransferPayload> STREAM_CODEC = new StreamCodec<>() {
         @Override
