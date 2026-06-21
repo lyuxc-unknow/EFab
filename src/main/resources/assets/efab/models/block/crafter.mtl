@@ -6,25 +6,25 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/grate
+map_Kd efab:block/grate
 
 newmtl None_base.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/base
+map_Kd efab:block/base
 
 newmtl None_plain.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/plain
+map_Kd efab:block/plain
 
 newmtl None_tech.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/tech
+map_Kd efab:block/tech

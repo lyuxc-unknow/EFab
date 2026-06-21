@@ -1,0 +1,23 @@
+# Blender MTL File: 'fe_control.blend'
+# Material Count: 3
+
+newmtl None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+
+d 1
+map_Kd efab:block/plain
+
+newmtl None_base.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+
+d 1
+map_Kd efab:block/base
+
+newmtl None_grate_fe.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+
+d 1
+map_Kd efab:block/grate_fe

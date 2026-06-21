@@ -1,0 +1,1 @@
+{"type":"efab:grid","pattern":["dqd","qbq","dqd"],"key":{"d":{"item":"minecraft:black_dye"},"b":{"item":"efab:base"},"q":{"item":"minecraft:quartz"}},"result":{"id":"efab:monitor"},"tiers":["fe","computing"],"fe_per_tick":10,"time":100}

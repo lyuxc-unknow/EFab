@@ -1,12 +1,12 @@
 {
-  "parent": "block/cube",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "particle": "efab:blocks/gearbox",
-    "down": "efab:blocks/gearbox",
-    "up": "efab:blocks/gearbox",
-    "east": "efab:blocks/gearbox",
-    "west": "efab:blocks/gearbox",
-    "north": "efab:blocks/gearbox",
-    "south": "efab:blocks/gearbox"
+    "particle": "efab:block/gearbox",
+    "down": "efab:block/gearbox",
+    "up": "efab:block/gearbox",
+    "east": "efab:block/gearbox",
+    "west": "efab:block/gearbox",
+    "north": "efab:block/gearbox",
+    "south": "efab:block/gearbox"
   }
 }

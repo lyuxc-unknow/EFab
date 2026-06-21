@@ -1,0 +1,1 @@
+{"type":"efab:grid","pattern":["ccc","ccc","ccc"],"key":{"c":{"item":"minecraft:cobblestone"}},"result":{"id":"minecraft:obsidian"},"tiers":["steam","liquid","fe"],"fe_per_tick":10,"fluids":[{"fluid":"minecraft:water","amount":1000},{"fluid":"minecraft:lava","amount":1000}],"time":60}

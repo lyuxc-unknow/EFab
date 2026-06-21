@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/fe_control.obj",
+  "textures": {
+    "particle": "efab:block/grate_fe"
+  },
+  "flip_v": true
+}

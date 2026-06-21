@@ -1,102 +1,63 @@
 package mcjty.efab.compat.jei;
 
-import mcjty.efab.blocks.ModBlocks;
-import mcjty.efab.blocks.crafter.CrafterContainer;
-import mcjty.efab.blocks.crafter.CrafterTE;
-import mcjty.efab.blocks.grid.GridContainer;
-import mcjty.efab.compat.jei.grid.GridRecipeCategory;
-import mcjty.efab.compat.jei.grid.GridRecipeWrapperFactory;
-import mcjty.efab.config.ConfigSetup;
-import mcjty.efab.network.EFabMessages;
-import mcjty.efab.network.PacketSendRecipe;
-import mcjty.efab.recipes.IEFabRecipe;
-import mcjty.efab.recipes.RecipeManager;
-import mcjty.efab.tools.ItemStackList;
-import mezz.jei.api.*;
-import mezz.jei.api.gui.IGuiIngredient;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import mcjty.efab.EFab;
+import mcjty.efab.recipe.EFabRecipe;
+import mcjty.efab.registry.ModItems;
+import mcjty.efab.registry.ModRecipes;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-@JEIPlugin
+@JeiPlugin
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class EFabJeiPlugin implements IModPlugin {
 
+    public static final RecipeType<EFabRecipe> EFAB_GRID =
+            RecipeType.create(EFab.MODID, "grid", EFabRecipe.class);
+
     @Override
-    public void register(@Nonnull IModRegistry registry) {
-        registry.handleRecipes(IEFabRecipe.class, new GridRecipeWrapperFactory(), GridRecipeCategory.ID);
-
-        List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
-        registry.addRecipes(efabRecipes, GridRecipeCategory.ID);
-        IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
-
-        if (ConfigSetup.vanillaCraftingAllowed.get()) {
-            registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
-            registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
-            transferRegistry.addRecipeTransferHandler(GridContainer.class, VanillaRecipeCategoryUid.CRAFTING, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
-        } else {
-            registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
-            registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);
-        }
-
-        transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
-
-        IRecipeTransferHandler<CrafterContainer> handler = new IRecipeTransferHandler<CrafterContainer>() {
-            @Override
-            public Class<CrafterContainer> getContainerClass() {
-                return CrafterContainer.class;
-            }
-
-            @Nullable
-            @Override
-            public IRecipeTransferError transferRecipe(CrafterContainer container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
-                Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients = recipeLayout.getItemStacks().getGuiIngredients();
-
-                IInventory inventory = container.getInventory(CrafterContainer.CONTAINER_INVENTORY);
-                BlockPos pos = ((CrafterTE) inventory).getPos();
-
-                if (doTransfer) {
-                    sendIngredients(guiIngredients, pos);
-                }
-
-                return null;
-            }
-        };
-        transferRegistry.addRecipeTransferHandler(handler, GridRecipeCategory.ID);
-        transferRegistry.addRecipeTransferHandler(handler, VanillaRecipeCategoryUid.CRAFTING);
+    public ResourceLocation getPluginUid() {
+        return ResourceLocation.fromNamespaceAndPath(EFab.MODID, "jei");
     }
 
     @Override
-    public void registerCategories(IRecipeCategoryRegistration registry) {
-        IJeiHelpers helpers = registry.getJeiHelpers();
-        IGuiHelper guiHelper = helpers.getGuiHelper();
-
-        registry.addRecipeCategories(new GridRecipeCategory(guiHelper));
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new EFabRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
-    public static void sendIngredients(Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients, BlockPos pos) {
-        ItemStackList items = ItemStackList.create(10);
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : guiIngredients.entrySet()) {
-            int recipeSlot = entry.getKey();
-            List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
-            if (!allIngredients.isEmpty()) {
-                items.set(recipeSlot, allIngredients.get(0));
-            }
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        if (Minecraft.getInstance().level == null) {
+            return;
         }
-
-        EFabMessages.INSTANCE.sendToServer(new PacketSendRecipe(items, pos));
+        List<EFabRecipe> recipes = Minecraft.getInstance().level.getRecipeManager()
+                .getAllRecipesFor(ModRecipes.EFAB_TYPE.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .toList();
+        registration.addRecipes(EFAB_GRID, recipes);
     }
 
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(ModItems.GRID, EFAB_GRID);
+        registration.addRecipeCatalyst(ModItems.CRAFTER, EFAB_GRID);
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        registration.addRecipeTransferHandler(new EFabRecipeTransferHandler(registration.getTransferHelper()), EFAB_GRID);
+    }
 }

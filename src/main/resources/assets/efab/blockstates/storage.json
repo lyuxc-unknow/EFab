@@ -1,16 +1,1 @@
-{
-  "forge_marker": 1,
-  "defaults": {
-    "model": "efab:storage"
-  },
-  "variants": {
-    "normal": [{}],
-    "inventory": [{}],
-    "facing": {
-      "south": {},
-      "north": { "y": 180 },
-      "east": { "y": 270 },
-      "west": { "y": 90 }
-    }
-  }
-}
+{"variants":{"facing=south":{"model":"efab:block/storage"},"facing=north":{"model":"efab:block/storage","y":180},"facing=east":{"model":"efab:block/storage","y":270},"facing=west":{"model":"efab:block/storage","y":90}}}

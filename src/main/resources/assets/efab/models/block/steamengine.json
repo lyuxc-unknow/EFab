@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/steamengine.obj",
+  "textures": {
+    "particle": "efab:block/gearbox"
+  },
+  "flip_v": true
+}

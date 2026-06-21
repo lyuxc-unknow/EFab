@@ -1,69 +1,34 @@
 package mcjty.efab;
 
+import mcjty.efab.config.EFabConfig;
+import mcjty.efab.registry.ModBlockEntities;
+import mcjty.efab.registry.ModBlocks;
+import mcjty.efab.registry.ModCreativeTabs;
+import mcjty.efab.registry.ModItems;
+import mcjty.efab.registry.ModMenus;
+import mcjty.efab.registry.ModRecipes;
+import mcjty.efab.network.ModNetworking;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 
-import mcjty.efab.commands.CmdSaveDefaults;
-import mcjty.efab.setup.ModSetup;
-import mcjty.lib.base.ModBase;
-import mcjty.lib.proxy.IProxy;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-
-@Mod(modid = EFab.MODID, name = EFab.MODNAME,
-        dependencies =
-                "required-after:mcjtylib_ng@[" + EFab.MIN_MCJTYLIB_VER + ",);" +
-                "after:forge@[" + EFab.MIN_FORGE11_VER + ",)",
-        version = EFab.MODVERSION)
-public class EFab implements ModBase {
+@Mod(EFab.MODID)
+public class EFab {
 
     public static final String MODID = "efab";
-    public static final String MODNAME = "EFab";
-    public static final String MODVERSION = "0.2.0";
-    public static final String MIN_MCJTYLIB_VER = "3.5.0";
 
-    public static final String MIN_FORGE11_VER = "13.19.0.2176";
+    public EFab(IEventBus modEventBus, ModContainer modContainer) {
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITY_TYPES.register(modEventBus);
+        ModMenus.MENU_TYPES.register(modEventBus);
+        ModRecipes.RECIPE_TYPES.register(modEventBus);
+        ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
+        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        modEventBus.addListener(ModBlockEntities::registerCapabilities);
+        modEventBus.addListener(ModNetworking::register);
 
-    @SidedProxy(clientSide = "mcjty.efab.setup.ClientProxy", serverSide = "mcjty.efab.setup.ServerProxy")
-    public static IProxy proxy;
-    public static ModSetup setup = new ModSetup();
-
-    @Mod.Instance(MODID)
-    public static EFab instance;
-
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event){
-        setup.preInit(event);
-        proxy.preInit(event);
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent e) {
-        setup.init(e);
-        proxy.init(e);
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent e) {
-        setup.postInit(e);
-        proxy.postInit(e);
-    }
-
-    @Mod.EventHandler
-    public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CmdSaveDefaults());
-    }
-
-    @Override
-    public String getModId() {
-        return MODID;
-    }
-
-    @Override
-    public void openManual(EntityPlayer player, int bookindex, String page) {
-
+        modContainer.registerConfig(ModConfig.Type.SERVER, EFabConfig.SERVER_SPEC);
     }
 }

@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/advanced_tank_top.obj",
+  "textures": {
+    "particle": "efab:block/tank"
+  },
+  "flip_v": true
+}

@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/crafter.obj",
+  "textures": {
+    "particle": "efab:block/tech"
+  },
+  "flip_v": true
+}

@@ -6,32 +6,32 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/base
+map_Kd efab:block/base
 
 newmtl None_plain.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/plain
+map_Kd efab:block/plain
 
 newmtl None_plain.png.001
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/plain
+map_Kd efab:block/plain
 
 newmtl None_screen.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/screen
+map_Kd efab:block/screen
 
 newmtl None_tank.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/tank
+map_Kd efab:block/tank

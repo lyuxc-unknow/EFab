@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "efab:block/advanced_fe_storage",
+    "down": "efab:block/base",
+    "up": "efab:block/base",
+    "east": "efab:block/advanced_fe_storage",
+    "west": "efab:block/advanced_fe_storage",
+    "north": "efab:block/advanced_fe_storage",
+    "south": "efab:block/advanced_fe_storage"
+  }
+}

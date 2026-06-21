@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/grid.obj",
+  "textures": {
+    "particle": "efab:block/grid"
+  },
+  "flip_v": true
+}

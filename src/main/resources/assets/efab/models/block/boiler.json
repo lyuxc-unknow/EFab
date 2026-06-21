@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/boiler.obj",
+  "textures": {
+    "particle": "efab:block/base"
+  },
+  "flip_v": true
+}

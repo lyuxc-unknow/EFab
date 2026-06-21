@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/monitor.obj",
+  "textures": {
+    "particle": "efab:block/screen"
+  },
+  "flip_v": true
+}

@@ -6,18 +6,18 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/tank_dirty
+map_Kd efab:block/tank_dirty
 
 newmtl None_base.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/base
+map_Kd efab:block/base
 
 newmtl None_plain.png
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 
 d 1
-map_Kd efab:blocks/tank
+map_Kd efab:block/tank

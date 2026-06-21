@@ -1,0 +1,1 @@
+{"type":"efab:grid","pattern":["rRr","RbR","rRr"],"key":{"r":{"item":"minecraft:redstone"},"b":{"item":"efab:base"},"R":{"item":"minecraft:redstone_block"}},"result":{"id":"efab:fe_storage"},"tiers":["steam","liquid"],"fluids":[{"fluid":"minecraft:lava","amount":1000}],"time":100}

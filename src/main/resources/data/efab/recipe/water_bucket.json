@@ -1,0 +1,1 @@
+{"type":"efab:grid","ingredients":[{"item":"minecraft:bucket"}],"result":{"id":"minecraft:water_bucket"},"tiers":["liquid"],"fluids":[{"fluid":"minecraft:water","amount":1000}],"time":40}

@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/wheel.obj",
+  "textures": {
+    "particle": "efab:block/plain"
+  },
+  "flip_v": true
+}

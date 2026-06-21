@@ -1,6 +1,1 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "efab:items/upgrade_digital"
-  }
-}
+{"parent":"minecraft:item/generated","textures":{"layer0":"efab:item/upgrade_digital"}}

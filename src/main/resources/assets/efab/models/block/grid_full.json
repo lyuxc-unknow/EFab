@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "efab:block/grid",
+    "down": "efab:block/base",
+    "up": "efab:block/grid",
+    "east": "efab:block/base",
+    "west": "efab:block/base",
+    "north": "efab:block/base",
+    "south": "efab:block/base"
+  }
+}

@@ -1,0 +1,1 @@
+{"type":"efab:grid","pattern":["rqr","qbq","dqd"],"key":{"d":{"item":"minecraft:black_dye"},"b":{"item":"efab:base"},"q":{"item":"minecraft:quartz"},"r":{"item":"minecraft:redstone"}},"result":{"id":"efab:autocrafting_monitor"},"tiers":["fe","computing"],"fe_per_tick":10,"time":100}

@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/pipes_bundle.obj",
+  "textures": {
+    "particle": "efab:block/plain"
+  },
+  "flip_v": true
+}

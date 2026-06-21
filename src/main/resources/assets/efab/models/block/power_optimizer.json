@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "efab:models/block/power_optimizer.obj",
+  "textures": {
+    "particle": "efab:block/base"
+  },
+  "flip_v": true
+}

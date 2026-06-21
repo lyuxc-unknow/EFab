@@ -1,49 +1,12 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "efab:empty_model"
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [
-      {
-        "custom": { "flip-v": true },
-        "model": "efab:grid.obj",
-        "transform": {
-          "gui": {
-            "scale": 0.65,
-            "rotation": [{"y": 90}, {"z": 95}]
-          },
-          "ground": {
-            "scale": 0.55
-          },
-          "firstperson": {
-            "scale": 0.55
-          },
-          "thirdperson": {
-            "scale": 0.55
-          }
-        }
-      }
-    ],
-    "facing": {
-      "south": {},
-      "north": { "y": 180 },
-      "east": { "y": 270 },
-      "west": { "y": 90 }
-    },
-    "half": {
-      "true": {
-        "submodel": {
-          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj" }
-        }
-      },
-      "false": {
-        "submodel": {
-          "b": { "custom": { "flip-v": true }, "model": "efab:fullbase.obj" },
-          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "transform": { "translation": [0, 0.8, 0] } }
-        }
-      }
-    }
+    "facing=south,half=false": { "model": "efab:block/grid_full" },
+    "facing=north,half=false": { "model": "efab:block/grid_full", "y": 180 },
+    "facing=east,half=false": { "model": "efab:block/grid_full", "y": 270 },
+    "facing=west,half=false": { "model": "efab:block/grid_full", "y": 90 },
+    "facing=south,half=true": { "model": "efab:block/grid" },
+    "facing=north,half=true": { "model": "efab:block/grid", "y": 180 },
+    "facing=east,half=true": { "model": "efab:block/grid", "y": 270 },
+    "facing=west,half=true": { "model": "efab:block/grid", "y": 90 }
   }
 }
