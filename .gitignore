@@ -1,0 +1,10 @@
+.gradle/
+.gradle-home/
+build/
+run/
+out/
+
+*.class
+*.log
+hs_err_pid*.log
+./.tmp-src
