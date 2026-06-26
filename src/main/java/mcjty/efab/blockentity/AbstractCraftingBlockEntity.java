@@ -33,7 +33,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -656,17 +655,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             return false;
         }
 
-        return isHeatSource(level.getBlockState(boilerPos.below()));
-    }
-
-    private static boolean isHeatSource(BlockState state) {
-        return state.is(Blocks.MAGMA_BLOCK)
-                || state.is(Blocks.LAVA)
-                || state.is(Blocks.FIRE)
-                || state.is(Blocks.SOUL_FIRE)
-                || state.is(Blocks.CAMPFIRE)
-                || state.is(Blocks.SOUL_CAMPFIRE)
-                || state.getFluidState().is(Fluids.LAVA);
+        return level.getBlockEntity(boilerPos) instanceof BoilerBlockEntity boiler && boiler.canMakeSteam();
     }
 
     // ---- Steam animation (flywheel spin + boiler steam) -----------------------------------------

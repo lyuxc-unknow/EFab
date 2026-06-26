@@ -5,13 +5,21 @@ import mcjty.efab.registry.ModBlockEntities;
 import mcjty.efab.registry.ModMenus;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 @EventBusSubscriber(modid = EFab.MODID, value = Dist.CLIENT)
 public final class ClientSetup {
+
+    public static void registerConfigScreen(ModContainer modContainer) {
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class,
+                ConfigurationScreen::new);
+    }
 
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {

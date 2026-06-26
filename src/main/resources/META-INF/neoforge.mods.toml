@@ -22,3 +22,17 @@ type="required"
 versionRange="[1.21.1,1.21.2)"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="crafttweaker"
+type="optional"
+versionRange="[21.0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="kubejs"
+type="optional"
+versionRange="[2101.7,)"
+ordering="AFTER"
+side="BOTH"

@@ -51,14 +51,36 @@ neoForge {
 
 repositories {
     maven {
+        name = 'McJty Maven'
+        url = 'https://maven.k-4u.nl'
+    }
+    maven {
         name = 'Jared Maven'
         url = 'https://maven.blamejared.com'
+    }
+    maven {
+        name = 'Latvian Maven'
+        url = 'https://maven.latvian.dev/releases'
+    }
+    maven {
+        name = 'JitPack'
+        url = 'https://jitpack.io'
+    }
+    maven {
+        name = "Curse Maven"
+        url = "https://cursemaven.com"
     }
 }
 
 dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    implementation "mcjty.theoneprobe:theoneprobe:${top_version}"
+    implementation "curse.maven:jade-324717:${jade_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-neoforge-1.21.1:${crafttweaker_version}"
+    compileOnly "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
+    runtimeOnly "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
 }
 
 tasks.withType(JavaCompile).configureEach {

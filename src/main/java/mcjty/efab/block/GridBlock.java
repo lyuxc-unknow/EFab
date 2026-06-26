@@ -23,6 +23,7 @@ import java.util.function.BiFunction;
 public class GridBlock extends NonFullHorizontalEFabEntityBlock {
 
     public static final BooleanProperty HALF = BooleanProperty.create("half");
+    public static final double HALF_HEIGHT = 0.1875;
 
     public GridBlock(Properties properties, BiFunction<BlockPos, BlockState, BlockEntity> factory) {
         super(properties, factory);
@@ -47,7 +48,7 @@ public class GridBlock extends NonFullHorizontalEFabEntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (state.getValue(HALF)) {
-            return Shapes.box(0, 0, 0, 1, 0.1875, 1);
+            return Shapes.box(0, 0, 0, 1, HALF_HEIGHT, 1);
         }
         return super.getShape(state, level, pos, context);
     }

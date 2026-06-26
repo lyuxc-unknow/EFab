@@ -5,6 +5,7 @@ build/
 run/
 out/
 .idea/
+src/old
 
 *.class
 *.log

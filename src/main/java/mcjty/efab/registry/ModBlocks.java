@@ -40,7 +40,8 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> PIPES = BLOCKS.register("pipes",
             () -> new NonFullHorizontalTierPartBlock(nonFullMachineProperties()));
     public static final DeferredBlock<Block> BOILER = BLOCKS.register("boiler",
-            () -> new NonFullHorizontalTierPartBlock(nonFullMachineProperties(), RecipeTier.STEAM));
+            () -> new TieredNonFullHorizontalEFabEntityBlock(nonFullMachineProperties(),
+                    BoilerBlockEntity::new, RecipeTier.STEAM));
     public static final DeferredBlock<Block> STEAM_ENGINE = BLOCKS.register("steamengine",
             () -> new TieredNonFullHorizontalEFabEntityBlock(nonFullMachineProperties(),
                     SteamEngineBlockEntity::new, RecipeTier.STEAM));

@@ -1,0 +1,1 @@
+mcjty.efab.compat.kubejs.EFabKubeJSPlugin

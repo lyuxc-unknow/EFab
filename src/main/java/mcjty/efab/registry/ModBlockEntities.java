@@ -2,6 +2,7 @@ package mcjty.efab.registry;
 
 import com.mojang.datafixers.DSL;
 import mcjty.efab.EFab;
+import mcjty.efab.blockentity.BoilerBlockEntity;
 import mcjty.efab.blockentity.CrafterBlockEntity;
 import mcjty.efab.blockentity.EnergyBlockEntity;
 import mcjty.efab.blockentity.GridBlockEntity;
@@ -58,6 +59,12 @@ public final class ModBlockEntities {
             BLOCK_ENTITY_TYPES.register("steamengine", () -> BlockEntityType.Builder.of(
                     SteamEngineBlockEntity::new,
                     ModBlocks.STEAM_ENGINE.get()
+            ).build(DSL.emptyPartType()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoilerBlockEntity>> BOILER =
+            BLOCK_ENTITY_TYPES.register("boiler", () -> BlockEntityType.Builder.of(
+                    BoilerBlockEntity::new,
+                    ModBlocks.BOILER.get()
             ).build(DSL.emptyPartType()));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MonitorBlockEntity>> MONITOR =

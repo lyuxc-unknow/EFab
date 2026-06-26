@@ -4,6 +4,7 @@ import mcjty.efab.api.recipe.EFabRecipeRequirement;
 import mcjty.efab.registry.ModRecipes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -112,6 +113,13 @@ public class EFabRecipe implements Recipe<EFabRecipeInput> {
             }
         }
         return needed;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> result = NonNullList.create();
+        result.addAll(requiredIngredients());
+        return result;
     }
 
     @Override
