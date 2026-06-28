@@ -1,0 +1,7 @@
+{
+    "machine": {"subtitle": "subtitle.efab.machine", "sounds": ["efab:machine"]},
+    "sparks": {"subtitle": "subtitle.efab.sparks", "sounds": ["efab:sparks"]},
+    "steam": {"subtitle": "subtitle.efab.steam", "sounds": ["efab:steam"]},
+    "beeps1": {"subtitle": "subtitle.efab.beeps", "sounds": ["efab:beeps1"]},
+    "beeps2": {"subtitle": "subtitle.efab.beeps", "sounds": ["efab:beeps2"]}
+}

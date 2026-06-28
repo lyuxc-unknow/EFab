@@ -9,6 +9,7 @@ import mcjty.efab.registry.ModCreativeTabs;
 import mcjty.efab.registry.ModItems;
 import mcjty.efab.registry.ModMenus;
 import mcjty.efab.registry.ModRecipes;
+import mcjty.efab.registry.ModSounds;
 import mcjty.efab.network.ModNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -30,6 +31,7 @@ public class EFab {
         ModMenus.MENU_TYPES.register(modEventBus);
         ModRecipes.RECIPE_TYPES.register(modEventBus);
         ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
+        ModSounds.SOUND_EVENTS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         modEventBus.addListener(ModBlockEntities::registerCapabilities);
         modEventBus.addListener(ModNetworking::register);

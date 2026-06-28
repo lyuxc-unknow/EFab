@@ -1,0 +1,30 @@
+# Materials for generated EFab pipe state OBJ models
+newmtl pipe_None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd efab:block/plain
+
+newmtl pipebend_None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd efab:block/black
+
+newmtl pipebend_None_plain
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd efab:block/plain
+
+newmtl pipeblock_None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd efab:block/base
+
+newmtl pipeblock_None_grate
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd efab:block/grate

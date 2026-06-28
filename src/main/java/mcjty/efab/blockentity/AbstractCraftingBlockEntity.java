@@ -7,6 +7,7 @@ import mcjty.efab.block.TierProvider;
 import mcjty.efab.config.EFabConfig;
 import mcjty.efab.registry.ModItems;
 import mcjty.efab.registry.ModBlocks;
+import mcjty.efab.registry.ModSounds;
 import mcjty.efab.recipe.EFabRecipe;
 import mcjty.efab.recipe.EFabRecipeInput;
 import mcjty.efab.recipe.FluidRequirement;
@@ -25,6 +26,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
@@ -79,6 +83,14 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     protected static final int UPGRADE_SLOTS = 9;
     protected static final int GHOST_SLOT = 21;
     protected static final int SLOT_COUNT = 22;
+    private static final int MACHINE_SOUND_TICKS = 50;
+    private static final int SPARKS_SOUND_TICKS = 25;
+    private static final int STEAM_SOUND_TICKS = 50;
+    private static final int BEEPS_SOUND_TICKS = 8;
+    private static final float MACHINE_SOUND_VOLUME = 1.0F;
+    private static final float SPARKS_SOUND_VOLUME = 0.7F;
+    private static final float STEAM_SOUND_VOLUME = 1.0F;
+    private static final float BEEPS_SOUND_VOLUME = 0.2F;
 
     private final ItemStackHandler items = new ItemStackHandler(SLOT_COUNT) {
         @Override
@@ -92,6 +104,11 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     protected boolean crafting;
     protected boolean repeatCrafting;
     private int feWarning;
+    private int machineSoundCooldown;
+    private int sparksSoundCooldown;
+    private int steamSoundCooldown;
+    private int beepsSoundCooldown;
+    private final RandomSource soundRandom = RandomSource.create();
 
     protected AbstractCraftingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -257,6 +274,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         if (level == null || level.isClientSide) {
             return;
         }
+        tickSoundCooldowns();
         if (!crafting) {
             updateNearbyMonitors();
             return;
@@ -280,6 +298,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             // Power optimizer: progress as fast as stored power (and steam) allows, ignoring per-tick flow caps.
             boolean advanced = false;
             boolean blockedByRequiredResource = false;
+            int startProgress = progress;
             while (progress < requiredTime) {
                 if (extractEnergyUncapped(fePerTick, true) < fePerTick) {
                     break;
@@ -305,6 +324,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             }
             if (advanced) {
                 feWarning = 0;
+                updateCraftingSounds(efabRecipe, startProgress);
             } else if (blockedByRequiredResource || !waitForResources()) {
                 stopCrafting();
                 updateNearbyMonitors();
@@ -336,6 +356,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
                 updateNearbyMonitors();
                 return;
             }
+            int startProgress = progress;
             if (fePerTick > 0) {
                 extractEnergy(fePerTick, false);
             }
@@ -344,6 +365,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
                 drainFluid(steamWater(bonus), false);
             }
             progress++;
+            updateCraftingSounds(efabRecipe, startProgress);
         }
 
         if (requiresSteam(efabRecipe)) {
@@ -397,6 +419,88 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         requiredTime = -1;
         feWarning = 0;
         setChanged();
+    }
+
+    private void tickSoundCooldowns() {
+        if (machineSoundCooldown > 0) {
+            machineSoundCooldown--;
+        }
+        if (sparksSoundCooldown > 0) {
+            sparksSoundCooldown--;
+        }
+        if (steamSoundCooldown > 0) {
+            steamSoundCooldown--;
+        }
+        if (beepsSoundCooldown > 0) {
+            beepsSoundCooldown--;
+        }
+    }
+
+    private void updateCraftingSounds(EFabRecipe recipe, int startProgress) {
+        Set<RecipeTier> tiers = recipe.tiers();
+        if (tiers.contains(RecipeTier.STEAM) && steamSoundCooldown <= 0) {
+            playCraftingSound(ModSounds.STEAM.get(), STEAM_SOUND_VOLUME);
+            emitSteamBurstAtRandomBoiler();
+            steamSoundCooldown = STEAM_SOUND_TICKS;
+        }
+        if (tiers.contains(RecipeTier.GEARBOX) && machineSoundCooldown <= 0) {
+            playCraftingSound(ModSounds.MACHINE.get(), MACHINE_SOUND_VOLUME);
+            machineSoundCooldown = MACHINE_SOUND_TICKS;
+        }
+        if (tiers.contains(RecipeTier.COMPUTING) && beepsSoundCooldown <= 0 && shouldPlayShortSound(startProgress)) {
+            playCraftingSound(soundRandom.nextBoolean() ? ModSounds.BEEPS1.get() : ModSounds.BEEPS2.get(), BEEPS_SOUND_VOLUME);
+            beepsSoundCooldown = BEEPS_SOUND_TICKS;
+        }
+        if ((recipe.fePerTick() > 0 || tiers.contains(RecipeTier.FE)) && sparksSoundCooldown <= 0 && shouldPlayShortSound(startProgress)) {
+            playCraftingSound(ModSounds.SPARKS.get(), SPARKS_SOUND_VOLUME);
+            emitFeControlSparks();
+            sparksSoundCooldown = SPARKS_SOUND_TICKS;
+        }
+    }
+
+    private boolean shouldPlayShortSound(int startProgress) {
+        return startProgress == 0 || soundRandom.nextFloat() < 0.04F;
+    }
+
+    private void playCraftingSound(SoundEvent sound, float volume) {
+        level.playSound(null, worldPosition, sound, SoundSource.BLOCKS, volume, 1.0F);
+    }
+
+    private void emitSteamBurstAtRandomBoiler() {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        List<BlockPos> boilers = new ArrayList<>();
+        for (BlockPos pos : craftingArea()) {
+            if (isValidSteamBoiler(pos)) {
+                boilers.add(pos.immutable());
+            }
+        }
+        if (!boilers.isEmpty()) {
+            emitBoilerSteamBurst(serverLevel, boilers.get(soundRandom.nextInt(boilers.size())));
+        }
+    }
+
+    private void emitFeControlSparks() {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        List<BlockPos> controls = new ArrayList<>();
+        for (BlockPos pos : craftingArea()) {
+            if (level.getBlockState(pos).is(ModBlocks.FE_CONTROL.get())) {
+                controls.add(pos.immutable());
+            }
+        }
+        if (controls.isEmpty()) {
+            return;
+        }
+
+        BlockPos pos = controls.get(soundRandom.nextInt(controls.size()));
+        double x = pos.getX() + 0.5;
+        double y = pos.getY() + 0.65;
+        double z = pos.getZ() + 0.5;
+        serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 12, 0.35, 0.25, 0.35, 0.03);
+        serverLevel.sendParticles(ParticleTypes.SMOKE, x, y + 0.1, z, 2, 0.15, 0.05, 0.15, 0.005);
     }
 
     protected Iterable<BlockPos> craftingArea() {
@@ -682,6 +786,15 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         double y = boilerPos.getY() + 0.55;
         double z = boilerPos.getZ() + 0.5 + facing.getStepZ() * 0.55;
         serverLevel.sendParticles(ParticleTypes.CLOUD, x, y, z, 2, 0.05, 0.02, 0.05, 0.01);
+    }
+
+    private void emitBoilerSteamBurst(ServerLevel serverLevel, BlockPos boilerPos) {
+        Direction facing = serverLevel.getBlockState(boilerPos).getValue(HorizontalDirectionalBlock.FACING);
+        double x = boilerPos.getX() + 0.5 + facing.getStepX() * 0.55;
+        double y = boilerPos.getY() + 0.55;
+        double z = boilerPos.getZ() + 0.5 + facing.getStepZ() * 0.55;
+        serverLevel.sendParticles(ParticleTypes.CLOUD, x, y, z, 12, 0.18, 0.10, 0.18, 0.02);
+        serverLevel.sendParticles(ParticleTypes.SMOKE, x, y + 0.05, z, 4, 0.12, 0.04, 0.12, 0.01);
     }
 
     private boolean hasWaterTankInCraftingNetwork() {

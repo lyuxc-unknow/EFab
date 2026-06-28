@@ -7,6 +7,7 @@ import mcjty.efab.blockentity.CrafterBlockEntity;
 import mcjty.efab.blockentity.EnergyBlockEntity;
 import mcjty.efab.blockentity.GridBlockEntity;
 import mcjty.efab.blockentity.MonitorBlockEntity;
+import mcjty.efab.blockentity.PowerOptimizerBlockEntity;
 import mcjty.efab.blockentity.StorageBlockEntity;
 import mcjty.efab.blockentity.SteamEngineBlockEntity;
 import mcjty.efab.blockentity.TankBlockEntity;
@@ -65,6 +66,12 @@ public final class ModBlockEntities {
             BLOCK_ENTITY_TYPES.register("boiler", () -> BlockEntityType.Builder.of(
                     BoilerBlockEntity::new,
                     ModBlocks.BOILER.get()
+            ).build(DSL.emptyPartType()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PowerOptimizerBlockEntity>> POWER_OPTIMIZER =
+            BLOCK_ENTITY_TYPES.register("power_optimizer", () -> BlockEntityType.Builder.of(
+                    PowerOptimizerBlockEntity::new,
+                    ModBlocks.POWER_OPTIMIZER.get()
             ).build(DSL.emptyPartType()));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MonitorBlockEntity>> MONITOR =

@@ -5,7 +5,8 @@ import mcjty.efab.block.GridBlock;
 import mcjty.efab.block.HorizontalEFabEntityBlock;
 import mcjty.efab.block.HorizontalTierPartBlock;
 import mcjty.efab.block.NonFullHorizontalEFabEntityBlock;
-import mcjty.efab.block.NonFullHorizontalTierPartBlock;
+import mcjty.efab.block.PipesBlock;
+import mcjty.efab.block.PowerOptimizerBlock;
 import mcjty.efab.block.TankBlock;
 import mcjty.efab.block.TieredNonFullHorizontalEFabEntityBlock;
 import mcjty.efab.block.TierPartBlock;
@@ -38,7 +39,7 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> GEARBOX = BLOCKS.register("gearbox",
             () -> new TierPartBlock(machineProperties(), RecipeTier.GEARBOX));
     public static final DeferredBlock<Block> PIPES = BLOCKS.register("pipes",
-            () -> new NonFullHorizontalTierPartBlock(nonFullMachineProperties()));
+            () -> new PipesBlock(nonFullMachineProperties()));
     public static final DeferredBlock<Block> BOILER = BLOCKS.register("boiler",
             () -> new TieredNonFullHorizontalEFabEntityBlock(nonFullMachineProperties(),
                     BoilerBlockEntity::new, RecipeTier.STEAM));
@@ -54,7 +55,8 @@ public final class ModBlocks {
             () -> new TieredNonFullHorizontalEFabEntityBlock(nonFullMachineProperties(),
                     (pos, state) -> new MonitorBlockEntity(pos, state, true), RecipeTier.COMPUTING));
     public static final DeferredBlock<Block> POWER_OPTIMIZER = BLOCKS.register("power_optimizer",
-            () -> new NonFullHorizontalTierPartBlock(nonFullMachineProperties()));
+            () -> new PowerOptimizerBlock(nonFullMachineProperties(),
+                    PowerOptimizerBlockEntity::new));
     public static final DeferredBlock<Block> FE_CONTROL = BLOCKS.register("fe_control",
             () -> new NonFullHorizontalEFabEntityBlock(nonFullMachineProperties(), EnergyBlockEntity::new));
     public static final DeferredBlock<Block> FE_STORAGE = BLOCKS.register("fe_storage",

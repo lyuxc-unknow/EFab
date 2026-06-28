@@ -34,6 +34,7 @@ public final class ClientSetup {
         event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), SteamEngineBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.TANK.get(), TankBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.MONITOR.get(), MonitorBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.POWER_OPTIMIZER.get(), PowerOptimizerBlockEntityRenderer::new);
     }
 
     @SubscribeEvent

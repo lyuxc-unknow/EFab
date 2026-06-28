@@ -1,6 +1,6 @@
 {
   "loader": "neoforge:obj",
-  "model": "efab:models/block/pipes_state0.obj",
+  "model": "efab:models/block/pipes_state1.obj",
   "textures": {
     "particle": "efab:block/plain"
   },
