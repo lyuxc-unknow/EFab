@@ -110,8 +110,17 @@ public class EFabEntityBlock extends Block implements EntityBlock {
     }
 
     @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (!state.is(oldState.getBlock())) {
+            AbstractCraftingBlockEntity.invalidateCachesAround(level, pos);
+        }
+    }
+
+    @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
+            AbstractCraftingBlockEntity.invalidateCachesAround(level, pos);
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof AbstractCraftingBlockEntity craftingBlockEntity) {
                 craftingBlockEntity.dropContents();

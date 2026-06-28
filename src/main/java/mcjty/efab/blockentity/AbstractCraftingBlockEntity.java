@@ -83,6 +83,8 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     protected static final int UPGRADE_SLOTS = 9;
     protected static final int GHOST_SLOT = 21;
     protected static final int SLOT_COUNT = 22;
+    protected static final int RANGE_HORIZONTAL = 5;
+    protected static final int RANGE_VERTICAL = 3;
     private static final int MACHINE_SOUND_TICKS = 50;
     private static final int SPARKS_SOUND_TICKS = 25;
     private static final int STEAM_SOUND_TICKS = 50;
@@ -96,6 +98,9 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            if (slot >= UPGRADE_START && slot < UPGRADE_START + UPGRADE_SLOTS) {
+                markMultiblockDirty();
+            }
         }
     };
 
@@ -109,6 +114,9 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     private int steamSoundCooldown;
     private int beepsSoundCooldown;
     private final RandomSource soundRandom = RandomSource.create();
+
+    private boolean multiblockDirty = true;
+    private MultiblockSnapshot multiblockSnapshot;
 
     protected AbstractCraftingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -471,9 +479,9 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             return;
         }
         List<BlockPos> boilers = new ArrayList<>();
-        for (BlockPos pos : craftingArea()) {
+        for (BlockPos pos : snapshot().boilers()) {
             if (isValidSteamBoiler(pos)) {
-                boilers.add(pos.immutable());
+                boilers.add(pos);
             }
         }
         if (!boilers.isEmpty()) {
@@ -485,12 +493,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        List<BlockPos> controls = new ArrayList<>();
-        for (BlockPos pos : craftingArea()) {
-            if (level.getBlockState(pos).is(ModBlocks.FE_CONTROL.get())) {
-                controls.add(pos.immutable());
-            }
-        }
+        List<BlockPos> controls = snapshot().feControls();
         if (controls.isEmpty()) {
             return;
         }
@@ -504,7 +507,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     }
 
     protected Iterable<BlockPos> craftingArea() {
-        return BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3));
+        return boxAround(worldPosition);
     }
 
     protected Optional<EFabRecipe> findRecipe(Level level) {
@@ -618,14 +621,91 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
                                    int pipes, boolean powerOptimizer) {
     }
 
-    protected MachineCounts scan() {
+    /**
+     * Cached structural view of the multiblock around this machine. Refreshed only when
+     * {@link #multiblockDirty} is set (a block is placed/broken in the box or an upgrade slot
+     * changes). Dynamic state (boiler heat, FE/fluid amounts, monitor text) is read live from
+     * the cached positions, so it never goes stale.
+     */
+    protected record MultiblockSnapshot(
+            MachineCounts counts,
+            Set<RecipeTier> presentTiers,
+            boolean hasFeControlBlock,
+            List<BlockPos> boilers,
+            List<BlockPos> steamEngines,
+            List<BlockPos> feControls,
+            List<BlockPos> tanks,
+            List<BlockPos> monitors,
+            List<BlockPos> autoMonitors,
+            List<BlockPos> crafters,
+            List<BlockPos> storages,
+            List<BlockPos> entityPositions
+    ) {
+    }
+
+    private static final MultiblockSnapshot EMPTY_SNAPSHOT = new MultiblockSnapshot(
+            new MachineCounts(0, 0, 0, 0, 0, false),
+            Set.of(), false,
+            List.of(), List.of(), List.of(), List.of(), List.of(), List.of(),
+            List.of(), List.of(), List.of());
+
+    protected static Iterable<BlockPos> boxAround(BlockPos origin) {
+        return BlockPos.betweenClosed(
+                origin.offset(-RANGE_HORIZONTAL, -RANGE_VERTICAL, -RANGE_HORIZONTAL),
+                origin.offset(RANGE_HORIZONTAL, RANGE_VERTICAL, RANGE_HORIZONTAL));
+    }
+
+    protected void markMultiblockDirty() {
+        multiblockDirty = true;
+    }
+
+    /**
+     * Mark every {@link AbstractCraftingBlockEntity} whose scan box contains {@code pos} as dirty.
+     * Called by the multiblock-part block hooks on place/break so caches stay consistent.
+     */
+    public static void invalidateCachesAround(Level level, BlockPos pos) {
+        if (level.isClientSide) {
+            return;
+        }
+        for (BlockPos p : boxAround(pos)) {
+            if (level.getBlockEntity(p) instanceof AbstractCraftingBlockEntity crafting) {
+                crafting.markMultiblockDirty();
+            }
+        }
+    }
+
+    protected MultiblockSnapshot snapshot() {
+        if (multiblockSnapshot == null || multiblockDirty) {
+            if (level == null) {
+                return multiblockSnapshot != null ? multiblockSnapshot : EMPTY_SNAPSHOT;
+            }
+            multiblockSnapshot = rebuildSnapshot();
+            multiblockDirty = false;
+        }
+        return multiblockSnapshot;
+    }
+
+    private MultiblockSnapshot rebuildSnapshot() {
         int gearboxes = 0;
         int processors = 0;
         int steamEngines = 0;
         int feControls = 0;
         int pipes = 0;
         boolean powerOptimizer = false;
-        for (BlockPos pos : craftingArea()) {
+        boolean hasFeControlBlock = false;
+        boolean hasTank = false;
+        Set<RecipeTier> presentTiers = EnumSet.noneOf(RecipeTier.class);
+        List<BlockPos> boilers = new ArrayList<>();
+        List<BlockPos> steamEnginePositions = new ArrayList<>();
+        List<BlockPos> feControlPositions = new ArrayList<>();
+        List<BlockPos> tankPositions = new ArrayList<>();
+        List<BlockPos> monitors = new ArrayList<>();
+        List<BlockPos> autoMonitors = new ArrayList<>();
+        List<BlockPos> crafters = new ArrayList<>();
+        List<BlockPos> storages = new ArrayList<>();
+        List<BlockPos> entityPositions = new ArrayList<>();
+
+        for (BlockPos pos : boxAround(worldPosition)) {
             BlockState state = level.getBlockState(pos);
             if (state.is(ModBlocks.GEARBOX.get())) {
                 gearboxes++;
@@ -635,13 +715,80 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
                 steamEngines++;
             } else if (state.is(ModBlocks.FE_CONTROL.get())) {
                 feControls++;
+                presentTiers.add(RecipeTier.FE);
+                hasFeControlBlock = true;
             } else if (state.is(ModBlocks.PIPES.get())) {
                 pipes++;
             } else if (state.is(ModBlocks.POWER_OPTIMIZER.get())) {
                 powerOptimizer = true;
             }
+
+            if (state.getBlock() instanceof TierProvider tierProvider) {
+                for (RecipeTier tier : tierProvider.getTiers()) {
+                    if (tier != RecipeTier.STEAM) {
+                        presentTiers.add(tier);
+                    }
+                }
+            }
+
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity == null) {
+                continue;
+            }
+            BlockPos immutable = pos.immutable();
+            entityPositions.add(immutable);
+            if (blockEntity instanceof BoilerBlockEntity) {
+                boilers.add(immutable);
+            }
+            if (blockEntity instanceof SteamEngineBlockEntity) {
+                steamEnginePositions.add(immutable);
+            }
+            if (blockEntity instanceof TankBlockEntity) {
+                tankPositions.add(immutable);
+                hasTank = true;
+            }
+            if (blockEntity instanceof MonitorBlockEntity monitor) {
+                if (monitor.isAutoCraftingMonitor()) {
+                    autoMonitors.add(immutable);
+                } else {
+                    monitors.add(immutable);
+                }
+            }
+            if (blockEntity instanceof AbstractCraftingBlockEntity) {
+                crafters.add(immutable);
+            }
+            if (blockEntity instanceof StorageBlockEntity) {
+                storages.add(immutable);
+            }
         }
-        return new MachineCounts(gearboxes, processors, steamEngines, feControls, pipes, powerOptimizer);
+
+        if (hasTank) {
+            presentTiers.add(RecipeTier.LIQUID);
+        }
+        for (int slot = UPGRADE_START; slot < UPGRADE_START + UPGRADE_SLOTS; slot++) {
+            ItemStack stack = items.getStackInSlot(slot);
+            if (stack.getItem() instanceof ModItems.TierUpgradeItem upgradeItem) {
+                presentTiers.add(upgradeItem.getTier());
+            }
+        }
+
+        return new MultiblockSnapshot(
+                new MachineCounts(gearboxes, processors, steamEngines, feControls, pipes, powerOptimizer),
+                Set.copyOf(presentTiers),
+                hasFeControlBlock,
+                List.copyOf(boilers),
+                List.copyOf(steamEnginePositions),
+                List.copyOf(feControlPositions),
+                List.copyOf(tankPositions),
+                List.copyOf(monitors),
+                List.copyOf(autoMonitors),
+                List.copyOf(crafters),
+                List.copyOf(storages),
+                List.copyOf(entityPositions));
+    }
+
+    protected MachineCounts scan() {
+        return snapshot().counts();
     }
 
     protected int speedBonus(EFabRecipe recipe, MachineCounts counts) {
@@ -649,20 +796,21 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         int pipeMax = EFabConfig.MAX_PIPE_SPEED_BONUS.get();
         Set<RecipeTier> tiers = recipe.tiers();
         int bonus = 1;
+        /// Never Never Never use Math.clamp for min > max
         if (tiers.contains(RecipeTier.GEARBOX) && counts.gearboxes() > 1) {
-            bonus = Math.clamp(counts.gearboxes(), bonus, max);
+            bonus = Math.max(bonus, Math.min(counts.gearboxes(), max));
         }
         if (tiers.contains(RecipeTier.STEAM) && counts.steamEngines() > 1) {
-            bonus = Math.clamp(counts.steamEngines(), bonus, max);
+            bonus = Math.max(bonus, Math.min(counts.steamEngines(), max));
         }
         if (tiers.contains(RecipeTier.FE) && counts.feControls() > 1) {
-            bonus = Math.clamp(counts.feControls(), bonus, max);
+            bonus = Math.max(bonus, Math.min(counts.feControls(), max));
         }
         if (tiers.contains(RecipeTier.COMPUTING) && counts.processors() > 1) {
-            bonus = Math.clamp(counts.processors(), bonus, max);
+            bonus = Math.max(bonus, Math.min(counts.processors(), max));
         }
         if (tiers.contains(RecipeTier.LIQUID) && counts.pipes() > 1) {
-            bonus = Math.clamp(counts.pipes(), bonus, pipeMax);
+            bonus = Math.max(bonus, Math.min(counts.pipes(), pipeMax));
         }
         return bonus;
     }
@@ -670,45 +818,22 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     // ---- Tiers / steam --------------------------------------------------------------------------
 
     protected boolean hasTiers(EFabRecipe recipe) {
-        Set<RecipeTier> present = EnumSet.noneOf(RecipeTier.class);
-        boolean[] hasFeControl = {false};
-        BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3)).forEach(pos -> {
-            BlockState state = level.getBlockState(pos);
-            if (state.getBlock() instanceof TierProvider tierProvider) {
-                for (RecipeTier tier : tierProvider.getTiers()) {
-                    if (tier != RecipeTier.STEAM) {
-                        present.add(tier);
-                    }
+        MultiblockSnapshot snap = snapshot();
+        Set<RecipeTier> present = snap.presentTiers();
+        for (RecipeTier tier : recipe.tiers()) {
+            if (tier == RecipeTier.STEAM) {
+                if (!hasSteamSetup()) {
+                    return false;
                 }
-            }
-            if (state.is(ModBlocks.FE_CONTROL.get())) {
-                present.add(RecipeTier.FE);
-                hasFeControl[0] = true;
-            }
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof TankBlockEntity) {
-                present.add(RecipeTier.LIQUID);
-            }
-        });
-        for (int slot = UPGRADE_START; slot < UPGRADE_START + UPGRADE_SLOTS; slot++) {
-            ItemStack stack = items.getStackInSlot(slot);
-            if (stack.getItem() instanceof ModItems.TierUpgradeItem upgradeItem) {
-                present.add(upgradeItem.getTier());
+            } else if (!present.contains(tier)) {
+                return false;
             }
         }
-        if (requiresSteam(recipe) && hasSteamSetup()) {
-            present.add(RecipeTier.STEAM);
-        }
-        return present.containsAll(recipe.tiers()) && (!needsFeControl(recipe) || hasFeControl[0]);
+        return !needsFeControl(recipe) || snap.hasFeControlBlock();
     }
 
     private boolean hasFeControl() {
-        for (BlockPos pos : craftingArea()) {
-            if (level.getBlockState(pos).is(ModBlocks.FE_CONTROL.get())) {
-                return true;
-            }
-        }
-        return false;
+        return snapshot().hasFeControlBlock();
     }
 
     private static boolean needsFeControl(EFabRecipe recipe) {
@@ -716,12 +841,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     }
 
     protected boolean hasProcessor() {
-        for (BlockPos pos : craftingArea()) {
-            if (level.getBlockState(pos).is(ModBlocks.PROCESSOR.get())) {
-                return true;
-            }
-        }
-        return false;
+        return snapshot().counts().processors() > 0;
     }
 
     protected static boolean requiresSteam(EFabRecipe recipe) {
@@ -737,7 +857,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         if (!hasWaterTankInCraftingNetwork()) {
             return false;
         }
-        for (BlockPos boilerPos : BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3))) {
+        for (BlockPos boilerPos : snapshot().boilers()) {
             if (isValidSteamBoiler(boilerPos)) {
                 return true;
             }
@@ -770,12 +890,16 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
      */
     private void driveSteamAnimation() {
         boolean emitSteam = level instanceof ServerLevel && progress % 4 == 0;
-        for (BlockPos pos : craftingArea()) {
+        for (BlockPos pos : snapshot().steamEngines()) {
             if (level.getBlockEntity(pos) instanceof SteamEngineBlockEntity steamEngine) {
                 steamEngine.keepWorking();
             }
-            if (emitSteam && isValidSteamBoiler(pos)) {
-                emitBoilerSteam((ServerLevel) level, pos);
+        }
+        if (emitSteam) {
+            for (BlockPos pos : snapshot().boilers()) {
+                if (isValidSteamBoiler(pos)) {
+                    emitBoilerSteam((ServerLevel) level, pos);
+                }
             }
         }
     }
@@ -953,13 +1077,15 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         String status = getStatusLine();
         String result = getResultLine();
         List<String> autoLines = collectCraftingStatusLines();
-        for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3))) {
+        MultiblockSnapshot snap = snapshot();
+        for (BlockPos pos : snap.monitors()) {
             if (level.getBlockEntity(pos) instanceof MonitorBlockEntity monitor) {
-                if (monitor.isAutoCraftingMonitor()) {
-                    monitor.setLines(autoLines);
-                } else {
-                    monitor.setCraftStatus(status, result);
-                }
+                monitor.setCraftStatus(status, result);
+            }
+        }
+        for (BlockPos pos : snap.autoMonitors()) {
+            if (level.getBlockEntity(pos) instanceof MonitorBlockEntity monitor) {
+                monitor.setLines(autoLines);
             }
         }
     }
@@ -987,7 +1113,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     private List<String> collectCraftingStatusLines() {
         List<String> lines = new ArrayList<>();
         lines.add(tr("status.efab.crafters"));
-        for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3))) {
+        for (BlockPos pos : snapshot().crafters()) {
             if (level.getBlockEntity(pos) instanceof AbstractCraftingBlockEntity craftingBlockEntity) {
                 ItemStack result = craftingBlockEntity.getCurrentResult();
                 String name = result.isEmpty() ? tr("status.efab.none_short") : result.getHoverName().getString();
@@ -1009,7 +1135,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
 
     protected int extractEnergy(int amount, boolean simulate) {
         int remaining = amount;
-        for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3))) {
+        for (BlockPos pos : snapshot().entityPositions()) {
             IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
             if (storage != null) {
                 remaining -= storage.extractEnergy(remaining, simulate);
@@ -1024,7 +1150,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     // Extract ignoring per-tick flow caps. Used by the Power Optimizer.
     protected int extractEnergyUncapped(int amount, boolean simulate) {
         int remaining = amount;
-        for (BlockPos pos : craftingArea()) {
+        for (BlockPos pos : snapshot().entityPositions()) {
             if (level.getBlockEntity(pos) instanceof EnergyBlockEntity energy) {
                 remaining -= energy.extractIgnoringLimit(remaining, simulate);
                 if (remaining <= 0) {
@@ -1038,7 +1164,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
     protected int drainFluid(FluidStack stack, boolean simulate) {
         int remaining = stack.getAmount();
         Set<IFluidHandler> seenHandlers = Collections.newSetFromMap(new IdentityHashMap<>());
-        for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-3, -2, -3), worldPosition.offset(3, 2, 3))) {
+        for (BlockPos pos : snapshot().entityPositions()) {
             IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
             if (handler != null && seenHandlers.add(handler)) {
                 FluidStack request = stack.copyWithAmount(remaining);

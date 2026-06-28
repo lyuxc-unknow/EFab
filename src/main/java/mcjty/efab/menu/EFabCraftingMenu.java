@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -84,9 +85,7 @@ public class EFabCraftingMenu extends AbstractContainerMenu {
         addDataSlot(new DataSlot() {
             @Override
             public int get() {
-                return blockEntity == null
-                        ? craftButtonState
-                        : blockEntity.getCraftButtonState().ordinal();
+                return blockEntity.getCraftButtonState().ordinal();
             }
 
             @Override
@@ -96,10 +95,7 @@ public class EFabCraftingMenu extends AbstractContainerMenu {
         });
     }
 
-    private static AbstractCraftingBlockEntity lookupBlockEntity(Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
-        if (extraData == null) {
-            return null;
-        }
+    private static @Nullable AbstractCraftingBlockEntity lookupBlockEntity(Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
         BlockPos pos = extraData.readBlockPos();
         if (playerInventory.player.level().getBlockEntity(pos) instanceof AbstractCraftingBlockEntity craftingBlockEntity) {
             return craftingBlockEntity;

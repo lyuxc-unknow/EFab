@@ -1,5 +1,6 @@
 package mcjty.efab.block;
 
+import mcjty.efab.blockentity.AbstractCraftingBlockEntity;
 import mcjty.efab.recipe.RecipeTier;
 import mcjty.efab.tooltip.EFabTooltips;
 import net.minecraft.core.BlockPos;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -24,6 +26,22 @@ public class TierPartBlock extends Block implements TierProvider {
     public TierPartBlock(Properties properties, RecipeTier... tiers) {
         super(properties);
         this.tiers = tiers.length == 0 ? Set.of() : EnumSet.copyOf(Set.of(tiers));
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (!state.is(oldState.getBlock())) {
+            AbstractCraftingBlockEntity.invalidateCachesAround(level, pos);
+        }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock())) {
+            AbstractCraftingBlockEntity.invalidateCachesAround(level, pos);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override

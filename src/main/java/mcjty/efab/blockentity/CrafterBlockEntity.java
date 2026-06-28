@@ -111,7 +111,7 @@ public class CrafterBlockEntity extends AbstractCraftingBlockEntity implements N
 
     private List<ItemStackHandler> matchingStorageHandlers() {
         List<ItemStackHandler> handlers = new ArrayList<>();
-        for (BlockPos pos : craftingArea()) {
+        for (BlockPos pos : snapshot().storages()) {
             if (level.getBlockEntity(pos) instanceof StorageBlockEntity storage && nameMatches(storage.getCraftingName())) {
                 handlers.add(storage.getItemHandler());
             }
