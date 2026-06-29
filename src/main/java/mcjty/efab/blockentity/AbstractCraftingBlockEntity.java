@@ -446,6 +446,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
 
     private void updateCraftingSounds(EFabRecipe recipe, int startProgress) {
         Set<RecipeTier> tiers = recipe.tiers();
+        boolean usesFe = usesFe(recipe);
         if (tiers.contains(RecipeTier.STEAM) && steamSoundCooldown <= 0) {
             playCraftingSound(ModSounds.STEAM.get(), STEAM_SOUND_VOLUME);
             emitSteamBurstAtRandomBoiler();
@@ -459,11 +460,19 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             playCraftingSound(soundRandom.nextBoolean() ? ModSounds.BEEPS1.get() : ModSounds.BEEPS2.get(), BEEPS_SOUND_VOLUME);
             beepsSoundCooldown = BEEPS_SOUND_TICKS;
         }
-        if ((recipe.fePerTick() > 0 || tiers.contains(RecipeTier.FE)) && sparksSoundCooldown <= 0 && shouldPlayShortSound(startProgress)) {
+        Optional<BlockPos> feControl = usesFe ? randomActiveFeControl() : Optional.empty();
+        if (usesFe) {
+            feControl.ifPresent(pos -> showFeControlSparks(pos, SPARKS_SOUND_TICKS));
+        }
+        if (feControl.isPresent() && sparksSoundCooldown <= 0 && shouldPlayShortSound(startProgress)) {
             playCraftingSound(ModSounds.SPARKS.get(), SPARKS_SOUND_VOLUME);
-            emitFeControlSparks();
+            emitFeControlSparkParticles(feControl.get());
             sparksSoundCooldown = SPARKS_SOUND_TICKS;
         }
+    }
+
+    private static boolean usesFe(EFabRecipe recipe) {
+        return recipe.fePerTick() > 0 || recipe.tiers().contains(RecipeTier.FE);
     }
 
     private boolean shouldPlayShortSound(int startProgress) {
@@ -489,21 +498,34 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         }
     }
 
-    private void emitFeControlSparks() {
+    private void showFeControlSparks(BlockPos pos, int ticks) {
+        if (level.getBlockEntity(pos) instanceof EnergyBlockEntity energyBlockEntity) {
+            energyBlockEntity.showSparks(ticks);
+        }
+    }
+
+    private void emitFeControlSparkParticles(BlockPos pos) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        List<BlockPos> controls = snapshot().feControls();
-        if (controls.isEmpty()) {
-            return;
-        }
-
-        BlockPos pos = controls.get(soundRandom.nextInt(controls.size()));
         double x = pos.getX() + 0.5;
         double y = pos.getY() + 0.65;
         double z = pos.getZ() + 0.5;
         serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 12, 0.35, 0.25, 0.35, 0.03);
         serverLevel.sendParticles(ParticleTypes.SMOKE, x, y + 0.1, z, 2, 0.15, 0.05, 0.15, 0.005);
+    }
+
+    private Optional<BlockPos> randomActiveFeControl() {
+        List<BlockPos> controls = new ArrayList<>();
+        for (BlockPos pos : snapshot().feControls()) {
+            if (level.getBlockEntity(pos) instanceof EnergyBlockEntity energyBlockEntity && energyBlockEntity.hasEnergyStored()) {
+                controls.add(pos);
+            }
+        }
+        if (controls.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(controls.get(soundRandom.nextInt(controls.size())));
     }
 
     protected Iterable<BlockPos> craftingArea() {
@@ -715,6 +737,7 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
                 steamEngines++;
             } else if (state.is(ModBlocks.FE_CONTROL.get())) {
                 feControls++;
+                feControlPositions.add(pos.immutable());
                 presentTiers.add(RecipeTier.FE);
                 hasFeControlBlock = true;
             } else if (state.is(ModBlocks.PIPES.get())) {
@@ -803,8 +826,9 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
         if (tiers.contains(RecipeTier.STEAM) && counts.steamEngines() > 1) {
             bonus = Math.max(bonus, Math.min(counts.steamEngines(), max));
         }
-        if (tiers.contains(RecipeTier.FE) && counts.feControls() > 1) {
-            bonus = Math.max(bonus, Math.min(counts.feControls(), max));
+        int activeFeControls = activeFeControlCount();
+        if (tiers.contains(RecipeTier.FE) && activeFeControls > 1) {
+            bonus = Math.max(bonus, Math.min(activeFeControls, max));
         }
         if (tiers.contains(RecipeTier.COMPUTING) && counts.processors() > 1) {
             bonus = Math.max(bonus, Math.min(counts.processors(), max));
@@ -813,6 +837,16 @@ public abstract class AbstractCraftingBlockEntity extends BlockEntity implements
             bonus = Math.max(bonus, Math.min(counts.pipes(), pipeMax));
         }
         return bonus;
+    }
+
+    private int activeFeControlCount() {
+        int count = 0;
+        for (BlockPos pos : snapshot().feControls()) {
+            if (level.getBlockEntity(pos) instanceof EnergyBlockEntity energyBlockEntity && energyBlockEntity.hasEnergyStored()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     // ---- Tiers / steam --------------------------------------------------------------------------

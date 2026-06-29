@@ -1,6 +1,7 @@
 package mcjty.efab.registry;
 
 import mcjty.efab.EFab;
+import mcjty.efab.block.FeControlBlock;
 import mcjty.efab.block.GridBlock;
 import mcjty.efab.block.HorizontalEFabEntityBlock;
 import mcjty.efab.block.HorizontalTierPartBlock;
@@ -58,7 +59,7 @@ public final class ModBlocks {
             () -> new PowerOptimizerBlock(nonFullMachineProperties(),
                     PowerOptimizerBlockEntity::new));
     public static final DeferredBlock<Block> FE_CONTROL = BLOCKS.register("fe_control",
-            () -> new NonFullHorizontalEFabEntityBlock(nonFullMachineProperties(), EnergyBlockEntity::new));
+            () -> new FeControlBlock(nonFullMachineProperties(), EnergyBlockEntity::new));
     public static final DeferredBlock<Block> FE_STORAGE = BLOCKS.register("fe_storage",
             () -> new HorizontalEFabEntityBlock(machineProperties(), EnergyBlockEntity::new));
     public static final DeferredBlock<Block> ADVANCED_FE_STORAGE = BLOCKS.register("advanced_fe_storage",

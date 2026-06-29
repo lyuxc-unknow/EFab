@@ -1,5 +1,6 @@
 package mcjty.efab.blockentity;
 
+import mcjty.efab.block.FeControlBlock;
 import mcjty.efab.config.EFabConfig;
 import mcjty.efab.registry.ModBlockEntities;
 import mcjty.efab.registry.ModBlocks;
@@ -20,10 +21,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnergyBlockEntity extends BlockEntity {
+public class EnergyBlockEntity extends BlockEntity implements ServerTickingBlockEntity {
 
     private final EFabEnergyStorage energy;
     private final int flow;
+    private int sparkTicks;
 
     public EnergyBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ENERGY_STORAGE.get(), pos, state);
@@ -61,9 +63,47 @@ public class EnergyBlockEntity extends BlockEntity {
         return flow;
     }
 
+    public boolean hasEnergyStored() {
+        return energy.getEnergyStored() > 0;
+    }
+
     /** Extract ignoring the per-tick flow limit (used by the Power Optimizer). */
     public int extractIgnoringLimit(int amount, boolean simulate) {
         return energy.extractIgnoringLimit(amount, simulate);
+    }
+
+    public void showSparks(int ticks) {
+        if (level == null || level.isClientSide || getBlockState().getBlock() != ModBlocks.FE_CONTROL.get() || !hasEnergyStored()) {
+            return;
+        }
+        sparkTicks = Math.max(sparkTicks, ticks);
+        setSparksState(true);
+    }
+
+    @Override
+    public void serverTick() {
+        if (!hasEnergyStored()) {
+            sparkTicks = 0;
+            setSparksState(false);
+            return;
+        }
+        if (sparkTicks > 0) {
+            sparkTicks--;
+            if (sparkTicks == 0) {
+                setSparksState(false);
+            }
+            return;
+        }
+        if (getBlockState().hasProperty(FeControlBlock.SPARKS) && getBlockState().getValue(FeControlBlock.SPARKS)) {
+            setSparksState(false);
+        }
+    }
+
+    private void setSparksState(boolean sparks) {
+        BlockState state = getBlockState();
+        if (level != null && state.hasProperty(FeControlBlock.SPARKS) && state.getValue(FeControlBlock.SPARKS) != sparks) {
+            level.setBlock(worldPosition, state.setValue(FeControlBlock.SPARKS, sparks), Block.UPDATE_ALL);
+        }
     }
 
     @Override

@@ -1,5 +1,10 @@
 {
   "ambientocclusion": false,
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "efab:block/sparks",
+    "txt": "efab:block/sparks"
+  },
   "elements": [
     { "from": [ 2, 8, 8 ],
       "to": [ 14, 21, 8 ],

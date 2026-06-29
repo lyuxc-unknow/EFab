@@ -1,19 +1,36 @@
 {
-  "variants": {
-    "facing=south": {
-      "model": "efab:block/fe_control"
+  "multipart": [
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "efab:block/fe_control" }
     },
-    "facing=north": {
-      "model": "efab:block/fe_control",
-      "y": 180
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "efab:block/fe_control", "y": 180 }
     },
-    "facing=east": {
-      "model": "efab:block/fe_control",
-      "y": 270
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "efab:block/fe_control", "y": 270 }
     },
-    "facing=west": {
-      "model": "efab:block/fe_control",
-      "y": 90
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "efab:block/fe_control", "y": 90 }
+    },
+    {
+      "when": { "facing": "south", "sparks": "true" },
+      "apply": { "model": "efab:block/sparks" }
+    },
+    {
+      "when": { "facing": "north", "sparks": "true" },
+      "apply": { "model": "efab:block/sparks", "y": 180 }
+    },
+    {
+      "when": { "facing": "east", "sparks": "true" },
+      "apply": { "model": "efab:block/sparks", "y": 270 }
+    },
+    {
+      "when": { "facing": "west", "sparks": "true" },
+      "apply": { "model": "efab:block/sparks", "y": 90 }
     }
-  }
+  ]
 }
