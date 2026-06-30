@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import mcjty.efab.api.recipe.EFabRecipeRequirement;
 import mcjty.efab.recipe.EFabRecipe;
 import mcjty.efab.recipe.FluidRequirement;
 import mcjty.efab.recipe.RecipeTier;
@@ -12,11 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.openzen.zencode.java.ZenCodeType;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @ZenRegister
 @ZenCodeType.Name("mods.efab.GridRecipeBuilder")
@@ -31,6 +28,7 @@ public class EFabGridRecipeBuilder {
     private final List<Ingredient> ingredients = new ArrayList<>();
     private final List<RecipeTier> tiers = new ArrayList<>();
     private final List<FluidRequirement> fluids = new ArrayList<>();
+    private final List<EFabRecipeRequirement> requirements = new ArrayList<>();
     private int time = 40;
     private int fePerTick = 0;
     private boolean autoApply = false;
@@ -151,7 +149,7 @@ public class EFabGridRecipeBuilder {
                 tiers,
                 fePerTick,
                 fluids,
-                List.of()
+                requirements
         ));
     }
 
@@ -212,5 +210,11 @@ public class EFabGridRecipeBuilder {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown EFab recipe tier: " + tier, e);
         }
+    }
+
+    public EFabGridRecipeBuilder addRequirements(EFabRecipeRequirement... requirements) {
+        this.requirements.addAll(Arrays.asList(requirements));
+        applyIfAuto();
+        return this;
     }
 }

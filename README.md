@@ -43,35 +43,42 @@ EFabRecipe.addShapeless("crt_glowstone_test", <item:minecraft:glowstone_dust>, [
 
 KubeJS server scripts go in `run/kubejs/server_scripts/*.js`.
 
-EFab exposes two recipe functions:
+EFab exposes two KubeJS-style recipe builders:
 
-- `event.recipes.efab.grid_shaped(output, pattern, key)`
-- `event.recipes.efab.grid_shapeless(output, ingredients)`
+- `event.recipes.addShaped(output, matrix)`
+- `event.recipes.addShapeless(output, ingredients)`
 
-Both support the same chainable settings as CraftTweaker. Fluid requirements use
-the EFab string form: `<amount>x <fluid id>`.
+The native schema names are also available as `event.recipes.efab.add_shaped(...)`
+and `event.recipes.efab.add_shapeless(...)`. The camelCase functions are
+registered as KubeJS mappings for script ergonomics.
+
+Both builders support these chainable methods:
+
+- `.time(ticks)`
+- `.tier("tier")`
+- `.fePerTick(fe)`
+- `.fluid("<amount>x <fluid id>")`
+- `.fluid("<fluid id>", amount)`
+- `.requirement(jsonOrRequirement)`
+
+For shaped recipes, use a 1x1 to 3x3 matrix. Empty cells can be `''` or `null`.
 
 ```js
 ServerEvents.recipes(event => {
-  event.recipes.efab.grid_shaped(
+  event.recipes.addShaped(
     'minecraft:stone_pickaxe',
     [
-      'D',
-      'G',
-      'S'
-    ],
-    {
-      D: 'minecraft:diamond',
-      G: 'minecraft:gold_ingot',
-      S: 'minecraft:stick'
-    }
+      ['minecraft:diamond', '', ''],
+      ['minecraft:gold_ingot', '', ''],
+      ['minecraft:stick', '', '']
+    ]
   )
     .time(50)
     .tier('liquid')
     .fluid('500x minecraft:water')
     .id('efab:kubejs_stone_pickaxe_test');
 
-  event.recipes.efab.grid_shapeless(
+  event.recipes.addShapeless(
     'minecraft:glowstone_dust',
     [
       'minecraft:redstone'
@@ -81,23 +88,34 @@ ServerEvents.recipes(event => {
     .tier('fe')
     .fePerTick(10)
     .id('efab:kubejs_glowstone_test');
-
-  event.recipes.efab.grid_shaped(
-    'minecraft:diamond_block',
-    [
-      'ccc',
-      'csc',
-      'ccc'
-    ],
-    {
-      c: 'minecraft:cobblestone',
-      s: 'minecraft:stone'
-    }
-  )
-    .time(60)
-    .tiers(['steam', 'liquid'])
-    .fluid('1000x minecraft:water')
-    .fluid('1000x minecraft:lava')
-    .id('efab:kubejs_diamond_block_test');
 });
 ```
+
+The in-repo test script is `run/kubejs/server_scripts/efab_test.js`.
+
+### KubeJS Extension API
+
+EFab's KubeJS recipe builders are normal Java builders, following the same
+pattern as Custom Machinery. Shared builder operations live in
+`mcjty.efab.api.kubejs.RecipeJSBuilder`.
+
+An addon can define a chainable requirement interface by extending
+`RecipeJSBuilder` and adding default methods that call `addRequirement(...)`:
+
+```java
+package example.compat.efab;
+
+import mcjty.efab.api.kubejs.RecipeJSBuilder;
+
+public interface ManaJS extends RecipeJSBuilder {
+
+    default RecipeJSBuilder mana(int amount) {
+        return addRequirement(new ManaRequirement(amount));
+    }
+}
+```
+
+When the addon is external to EFab, that interface still has to be attached to
+EFab's KubeJS recipe builder classes by the addon integration layer, for example
+with a mixin targeting `EFabGridShapedRecipeJSBuilder` and
+`EFabGridShapelessRecipeJSBuilder`.

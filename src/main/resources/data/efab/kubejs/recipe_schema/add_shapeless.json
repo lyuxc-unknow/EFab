@@ -1,0 +1,83 @@
+{
+  "recipe_factory": "efab:add_shapeless",
+  "override_type": "efab:grid",
+  "mappings": [
+    "addShapeless",
+    "efabGridShapeless"
+  ],
+  "constructors": [
+    {
+      "keys": [
+        "result",
+        "ingredients"
+      ]
+    }
+  ],
+  "unique": [
+    "result"
+  ],
+  "keys": [
+    {
+      "name": "result",
+      "role": "output",
+      "type": "item_stack"
+    },
+    {
+      "name": "ingredients",
+      "role": "input",
+      "type": {
+        "component": "ingredient",
+        "type": "list",
+        "min": 1
+      }
+    },
+    {
+      "name": "time",
+      "type": {
+        "min": 1,
+        "type": "int"
+      },
+      "optional": 40,
+      "excluded": true
+    },
+    {
+      "name": "tiers",
+      "type": {
+        "component": "string",
+        "type": "list",
+        "min": 0
+      },
+      "optional": [],
+      "excluded": true
+    },
+    {
+      "name": "fe_per_tick",
+      "type": {
+        "min": 0,
+        "type": "int"
+      },
+      "optional": 0,
+      "excluded": true
+    },
+    {
+      "name": "fluids",
+      "type": {
+        "component": "efab:fluid_requirement",
+        "type": "list",
+        "min": 0
+      },
+      "optional": [],
+      "excluded": true
+    },
+    {
+      "name": "requirements",
+      "type": {
+        "component": "efab:recipe_requirement",
+        "type": "list",
+        "min": 0
+      },
+      "optional": [],
+      "excluded": true
+    }
+  ]
+}
